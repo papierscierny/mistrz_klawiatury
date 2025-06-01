@@ -1,1 +1,2 @@
  
+-e "samochodowiec\nprzedsiebiorca\nkomputeryzacja\nodpowiedzialnosc\nsamozatrudnienie\nwielokulturowosc\nmiedzyuczelniany\nhiperinteligencja\nelektromagnetyzm" 
