@@ -1,1 +1,9 @@
-osa, zupa, guma, soki, boli, mopy, motyl, rower, buty
+osa
+zupa
+guma
+soki
+boli
+mopy
+motyl
+rower
+buty
