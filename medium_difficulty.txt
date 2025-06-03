@@ -7,7 +7,7 @@ absurdalny
 slonecznik 
 ilustracja 
 blyskawica 
-gorlica 
+gorylica 
 receptura 
 harmonjny 
 soczysty 
@@ -23,3 +23,15 @@ tesknota
 laborant 
 zapachowy 
 wedrowny 
+peleryna
+pistacjowy
+klawiatura
+motorniczy
+naklejka
+sklejka
+podstawka
+wyobcowany
+nieobecny
+pomarancza
+projektor
+prezydent
