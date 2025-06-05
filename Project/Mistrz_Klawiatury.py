@@ -24,6 +24,37 @@ class Difficulty:
     medium = 2
     hard = 3
 
+def difficulty_to_str(difficulty: int) -> str:
+    if difficulty == Difficulty.easy:
+        return "easy"
+    if difficulty == Difficulty.medium:
+        return "medium"
+    if difficulty == Difficulty.easy:
+        return "hard"
+    return "None"
+
+
+def str_to_difficulty(string: str) -> Optional[int]:
+    string = string.strip('\n')
+    string = string.strip()
+    if string == "easy":
+        return Difficulty.easy
+    if string == "medium":
+        return Difficulty.medium
+    if string == "hard":
+        return Difficulty.hard
+    return None
+
+
+def print_word_and_check(word: str) -> ResultOfCheck:
+    print("Type:")
+    print("     " + word)
+    typed = input("   - ")
+    typed = typed.strip('\n')
+    typed = typed.strip()
+    return ResultOfCheck(correct=(typed == word), correct_word=word, typed_word=typed)
+
+
 class Game:
     def __init__(self):
         self.difficulty = Difficulty.easy
