@@ -6,7 +6,7 @@ def txtcenter(txt):
     try:
         terminal_width = os.get_terminal_size().columns
     except:
-        terminal_width = 140  # Domyślna szerokość jeśli nie uda się wykryć
+        terminal_width = 80  # Domyślna szerokość jeśli nie uda się wykryć
 
     d = (terminal_width - len(txt)) // 2
 
@@ -18,8 +18,10 @@ def txtcenter(txt):
 
 #funkcja ekranu startowego
 def start():
+    #czyszczenie konsoli na początek
+    os.system('cls' if os.name == 'nt' else 'clear') 
 
-    #------------------------------NAPIS TYTUŁOWY--------------------------
+    #NAPIS TYTUŁOWY
     #Tekst tytułowy
     ascii_art = """
         ███╗░░░███╗██╗░██████╗████████╗██████╗░███████╗   ██╗░░██╗██╗░░░░░░█████╗░░██╗░░░░░░░██╗██╗░█████╗░████████╗██╗░░░██╗██████╗░██╗░░░██╗
@@ -36,10 +38,21 @@ def start():
 
 
     # Wyświetl każdą linię wycentrowaną na zielono
+    print("\033[32m")
     for i in lines:
-        txtcenter("\033[32m" + i + "\033[0m")
+        txtcenter(i)
+    print("\033[0m")
 
-    #-------------------------------------KONIEC NAPISU TYTYŁOWEGO--------------------------
+    #NACIŚNIJ ENTER
+    print("\n"*5)
+    txtcenter("\033[31mNaciśnij [Enter] przycisk aby przejść dalej.\033[0m")
+
+    #Sprawdzanie czy naciśnięto enter
+    input("")
+
+    #PRZEJŚCIE DALEJ
+    #czyszczenie konsoli
+    os.system('cls' if os.name == 'nt' else 'clear') 
 
 def main():
     start()
