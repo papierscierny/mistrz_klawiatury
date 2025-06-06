@@ -54,6 +54,18 @@ def print_word_and_check(word: str) -> ResultOfCheck:
     typed = typed.strip()
     return ResultOfCheck(correct=(typed == word), correct_word=word, typed_word=typed)
 
+def random_word_from_file(file_name: str) -> Optional[str]:
+    try:
+        lines = []
+        with open(file_name, 'r') as file:
+            lines = file.readlines()
+        word = random.choice(lines)
+        word = word.strip('\n')
+        word = word.strip()
+        return word
+    except:
+        return None
+
 
 class Game:
     def __init__(self):
