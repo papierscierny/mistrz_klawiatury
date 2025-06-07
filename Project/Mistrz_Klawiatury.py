@@ -1,5 +1,104 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from os import system
+import sys
+
+def clear():
+    if game.is_running_in_console:
+        system("cls")
+    else:
+        print()
+        print()
+
+def print_red(*args, **kwargs):
+    if game.is_running_in_console:
+        print("\033[31m", end = '')
+        print(*args, **kwargs, end = '')
+        print("\033[0m")
+    else:
+        print("ERR: ", end = '')
+        print(*args, **kwargs)
+
+class Difficulty:
+    easy = 1
+    medium = 2
+    hard = 3
+
+def difficulty_to_str(difficulty: int) -> str:
+    if difficulty == Difficulty.easy:
+        return "easy"
+    if difficulty == Difficulty.medium:
+        return "medium"
+    if difficulty == Difficulty.easy:
+        return "hard"
+    return "None"
+
+
+def str_to_difficulty(string: str) -> Optional[int]:
+    string = string.strip('\n')
+    string = string.strip()
+    if string == "easy":
+        return Difficulty.easy
+    if string == "medium":
+        return Difficulty.medium
+    if string == "hard":
+        return Difficulty.hard
+    return None
+
+
+def print_word_and_check(word: str) -> ResultOfCheck:
+    print("Type:")
+    print("     " + word)
+    typed = input("   - ")
+    typed = typed.strip('\n')
+    typed = typed.strip()
+    return ResultOfCheck(correct=(typed == word), correct_word=word, typed_word=typed)
+
+def random_word_from_file(file_name: str) -> Optional[str]:
+    try:
+        lines = []
+        with open(file_name, 'r') as file:
+            lines = file.readlines()
+        word = random.choice(lines)
+        word = word.strip('\n')
+        word = word.strip()
+        return word
+    except:
+        return None
+
+
+class Game:
+    def __init__(self):
+        self.difficulty = Difficulty.easy
+        self.is_running_in_console = sys.stdin.isatty()
+
+    def choose_difficulty(self):
+        in_loop = True
+        player_input = ""
+        clear()
+        print("====== Choose difficulty ======")
+        print("type 'easy', 'medium' or 'hard'")
+        while in_loop:
+            player_input = input(" => ")
+            player_input = player_input.lower()
+            if player_input == "easy":
+                self.difficulty = Difficulty.easy
+                in_loop = False
+            elif player_input == "medium":
+                self.difficulty = Difficulty.medium
+                in_loop = False
+            elif player_input == "hard":
+                self.difficulty = Difficulty.hard
+                in_loop = False
+            else:
+                clear()
+                print("====== Choose difficulty ======")
+                print("type 'easy', 'medium' or 'hard'")
+                print()
+                print_red(f"'{player_input}' not recognised as game difficulty")
+
+
+game = Game()
 
 def main():
     pass
