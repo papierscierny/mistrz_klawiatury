@@ -71,6 +71,27 @@ def start():
     #czyszczenie konsoli
     os.system('cls' if os.name == 'nt' else 'clear') 
 
+def end():
+    os.system('cls' if os.name == 'nt' else 'clear') 
+
+    #NAPIS TYTUŁOWY
+    #Tekst końca
+    ascii_art = """
+        ░▒█░▄▀░▒█▀▀▀█░▒█▄░▒█░▀█▀░▒█▀▀▀░▒█▀▀▄░░░▒█▀▀█░▒█▀▀▄░▒█░░▒█
+        ░▒█▀▄░░▒█░░▒█░▒█▒█▒█░▒█░░▒█▀▀▀░▒█░░░░░░▒█░▄▄░▒█▄▄▀░▒▀▄▄▄▀
+        ░▒█░▒█░▒█▄▄▄█░▒█░░▀█░▄█▄░▒█▄▄▄░▒█▄▄▀░░░▒█▄▄▀░▒█░▒█░░░▒█░░
+
+    """
+
+    # Podziel tekst na linie i usuń puste linie na początku i na końcu
+    lines = [line for line in ascii_art.split('\n') if line.strip() != '']
+
+    # Wyświetl każdą linię wycentrowaną na czerwono
+    print("\033[31m")
+    for i in lines:
+        txtcenter(i)
+    print("\033[0m")
+
 def clear():
     if game.is_running_in_console:
         os.system("cls")
