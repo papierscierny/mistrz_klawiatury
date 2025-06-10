@@ -4,6 +4,7 @@ import os
 import random
 import time
 import sys
+
 from typing import Optional, Any, Tuple, List
 
 class ResultOfCheck:
@@ -168,8 +169,3 @@ class Game:
 
 game = Game()
 
-def main():
-    start()
-
-if __name__ == "__main__":
-    main()
