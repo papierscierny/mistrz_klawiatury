@@ -6,7 +6,10 @@ import time
 import sys
 from typing import Optional, Any, Tuple, List
 
+is_running_in_console = sys.stdin.isatty()
+
 class ResultOfCheck:
+    ''' Klasa przechowyjąca dane dotyczące wpisanego i sprawdzonego słowa '''
     def __init__(self, correct: bool = False, correct_word: str = "", typed_word: str = "", time_spent: float = 0):
         self.correct = correct
         self.correct_word = correct_word
@@ -72,14 +75,16 @@ def start():
     os.system('cls' if os.name == 'nt' else 'clear') 
 
 def clear():
-    if game.is_running_in_console:
+    ''' Funkcja służy do czyszczenia konsoli '''
+    if is_running_in_console:
         os.system("cls")
     else:
         print()
         print()
 
 def print_red(*args, **kwargs):
-    if game.is_running_in_console:
+    ''' Funkcja wypisuje przekazany napis w kolorze czerwonym '''
+    if is_running_in_console:
         print("\033[31m", end = '')
         print(*args, **kwargs, end = '')
         print("\033[0m")
@@ -88,11 +93,13 @@ def print_red(*args, **kwargs):
         print(*args, **kwargs)
 
 class Difficulty:
+    ''' Klasa przedstawia różne trudności gry za pomocą formatu int '''
     easy = 1
     medium = 2
     hard = 3
 
 def difficulty_to_str(difficulty: int) -> str:
+    ''' Funkcja zamienia trudność [int] do napisu [str] '''
     if difficulty == Difficulty.easy:
         return "easy"
     if difficulty == Difficulty.medium:
@@ -103,6 +110,7 @@ def difficulty_to_str(difficulty: int) -> str:
 
 
 def str_to_difficulty(string: str) -> Optional[int]:
+    ''' Funkcja zamienia napis [str] do trudności [int] '''
     string = string.strip('\n')
     string = string.strip()
     if string == "easy":
@@ -115,6 +123,7 @@ def str_to_difficulty(string: str) -> Optional[int]:
 
 
 def print_word_and_check(word: str) -> ResultOfCheck:
+    ''' Funkcja wypisuje podane słowo, sprawdza poprawność i zwraca wynik '''
     print("Type:")
     print("     " + word)
     typed = input("   - ")
@@ -123,6 +132,7 @@ def print_word_and_check(word: str) -> ResultOfCheck:
     return ResultOfCheck(correct=(typed == word), correct_word=word, typed_word=typed)
 
 def random_word_from_file(file_name: str) -> Optional[str]:
+    ''' Funkcja wybiera przypadkowe słowo z pliku .txt o podanej nazwie. W przypadku błędu zwraca None '''
     try:
         lines = []
         with open(file_name, 'r') as file:
@@ -136,11 +146,12 @@ def random_word_from_file(file_name: str) -> Optional[str]:
 
 
 class Game:
+    ''' Główna klasa zawierająca funkcjonalność gry '''
     def __init__(self):
         self.difficulty = Difficulty.easy
-        self.is_running_in_console = sys.stdin.isatty()
 
     def choose_difficulty(self):
+        ''' Funkcja służąca do wyboru trudności rozgrywki '''
         in_loop = True
         player_input = ""
         clear()
