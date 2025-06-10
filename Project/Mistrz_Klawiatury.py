@@ -48,7 +48,6 @@ def start():
     lines = [line for line in ascii_art.split('\n') if line.strip() != '']
 
 
-
     # Wyświetl każdą linię wycentrowaną na zielono
     print("\033[32m")
     for i in lines:
@@ -57,7 +56,7 @@ def start():
 
     #NACIŚNIJ ENTER
     print("\n"*5)
-    txtcenter("\033[31mNaciśnij [Enter] przycisk aby przejść dalej.\033[0m")
+    txtcenter("\033[31mNaciśnij [Enter] aby przejść dalej.\033[0m")
 
     #Sprawdzanie czy naciśnięto enter
     input("")
@@ -65,6 +64,58 @@ def start():
     #PRZEJŚCIE DALEJ
     #czyszczenie konsoli
     os.system('cls' if os.name == 'nt' else 'clear') 
+
+def end(n, t):
+    os.system('cls' if os.name == 'nt' else 'clear') 
+
+    #NAPIS TYTUŁOWY
+    #Tekst końca
+    ascii_art = """
+        ░▒█░▄▀░▒█▀▀▀█░▒█▄░▒█░▀█▀░▒█▀▀▀░▒█▀▀▄░░░▒█▀▀█░▒█▀▀▄░▒█░░▒█
+        ░▒█▀▄░░▒█░░▒█░▒█▒█▒█░▒█░░▒█▀▀▀░▒█░░░░░░▒█░▄▄░▒█▄▄▀░▒▀▄▄▄▀
+        ░▒█░▒█░▒█▄▄▄█░▒█░░▀█░▄█▄░▒█▄▄▄░▒█▄▄▀░░░▒█▄▄▀░▒█░▒█░░░▒█░░
+
+    """
+
+    # Podziel tekst na linie i usuń puste linie na początku i na końcu
+    lines = [line for line in ascii_art.split('\n') if line.strip() != '']
+
+    # Wyświetl każdą linię wycentrowaną na czerwono
+    print("\033[31m")
+    for i in lines:
+        txtcenter(i)
+    print("\033[0m")
+
+    endtab = ["-----------------------------------------------------", 
+    f"|   Przepisane słowa   |             {n:.0f}              |",
+    "|---------------------------------------------------|",
+    f"|    Czas całkowity    |           {t:.2f}s            |",
+    "|---------------------------------------------------|",
+    f"| Średni czas na słowo |           {t/n:.2f}s            |",
+    "-----------------------------------------------------"]
+
+    #ustaw kolor na czerwony
+    print("\033[33m")
+
+    for i in endtab:
+        txtcenter(i)
+
+    #reset koloru
+    print("\033[0m")
+
+    #NACIŚNIJ ENTER
+    print("\n"*5)
+    print("\033[31m")
+    txtcenter("Naciśnij [Enter] aby rozpocząć od nowa.")
+    print("\033[0m")
+
+    #Sprawdzanie czy naciśnięto enter
+    input("")
+
+    #PRZEJŚCIE DALEJ
+    #czyszczenie konsoli
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def clear():
     if game.is_running_in_console:
