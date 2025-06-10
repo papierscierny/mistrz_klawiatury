@@ -129,6 +129,26 @@ def random_word_from_file(file_name: str) -> Optional[str]:
     except:
         return None
 
+class GameMode:
+    nauka = 1
+    na_czas = 2
+
+def game_mode_to_str(mode: int) -> str:
+    if mode == GameMode.nauka:
+        return "nauka"
+    if mode == GameMode.na_czas:
+        return "na czas"
+    return "None"
+
+
+def str_to_game_mode(string: str) -> Optional[int]:
+    string = string.strip('\n')
+    string = string.strip()
+    if string == "nauka":
+        return GameMode.nauka
+    if string == "na czas":
+        return GameMode.na_czas
+    return None
 
 class Game:
     def __init__(self):
