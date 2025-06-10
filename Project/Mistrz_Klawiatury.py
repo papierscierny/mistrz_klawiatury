@@ -1,9 +1,3 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-import os
-import random
-import time
-import sys
 
 from typing import Optional, Any, Tuple, List
 
@@ -168,4 +162,5 @@ class Game:
 
 
 game = Game()
+
 
