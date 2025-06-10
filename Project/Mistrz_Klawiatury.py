@@ -80,6 +80,7 @@ class Difficulty:
 class GameMode:
     nauka = 1
     na_czas = 2
+    specjalny = 3  # Dodany nowy tryb specjalny
 
 
 def difficulty_to_str(difficulty: int) -> str:
@@ -109,6 +110,8 @@ def game_mode_to_str(mode: int) -> str:
         return "nauka"
     if mode == GameMode.na_czas:
         return "na czas"
+    if mode == GameMode.specjalny:  # Dodana obsługa nowego trybu 
+        return "specjalny"          #
     return "None"
 
 
@@ -119,6 +122,8 @@ def str_to_game_mode(string: str) -> Optional[int]:
         return GameMode.nauka
     if string == "na czas":
         return GameMode.na_czas
+    if string == "specjalny":        # Dodana obsługa nowego trybu 
+        return GameMode.specjalny    #
     return None
 
 
@@ -203,6 +208,18 @@ class Game:
         self.is_running_in_console = sys.stdin.isatty()
 
     def choose_difficulty(self):
+        if self.game_mode == GameMode.specjalny:                        # Tryb specjalny - pominięcie wyboru trudności oraz wyświetlenie zasad
+            clear()
+            print("\033[31mTRYB SPECJALNY\033[0m")
+            print("Zasady:")
+            print("- Wpisz jak najszybciej wyświetlony tekst")
+            print("- Gdy popełnisz błąd, nie możesz kontynuować")
+            print("- Musisz poprawić błąd zanim przejdziesz dalej")
+            print("\n\033[33mPOWODZENIA!\033[0m")
+            time.sleep(4)  # Wiadomość będzie widoczna przez 4 sekundy
+            return                                                      #
+                                                   
+             
         clear()
         print("====== Wybierz poziom trudności ======")
         print("Dostępne opcje: easy, medium, hard")
@@ -215,7 +232,7 @@ class Game:
     def choose_game_mode(self):
         clear()
         print("====== Wybierz tryb gry ======")
-        print("Dostępne tryby: nauka, na czas")
+        print("Dostępne tryby: nauka, na czas, specjalny")    # Dodana opcja specjalny
         while self.game_mode is None:
             choice = input("Twój wybór: ").lower()
             self.game_mode = str_to_game_mode(choice)
@@ -227,8 +244,9 @@ class Game:
         self.choose_difficulty()
 
         clear()
-        print(f"Tryb gry: {game_mode_to_str(self.game_mode)}")
-        print(f"Poziom trudności: {difficulty_to_str(self.difficulty)}")
+        print(f"Tryb gry: {game_mode_to_str(self.game_mode)}") 
+        if self.game_mode != GameMode.specjalny:                               # pominięcie wyświetlania poziomu dla trybu specjalnego              
+            print(f"Poziom trudności: {difficulty_to_str(self.difficulty)}")
         print("\nRozpoczynamy test...")
         time.sleep(2)
 
@@ -265,6 +283,6 @@ def main():
     game.play()
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
     input("\nNaciśnij Enter, aby zakończyć...")
