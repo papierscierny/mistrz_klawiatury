@@ -111,7 +111,7 @@ def game_mode_to_str(mode: int) -> str:
     if mode == GameMode.na_czas:
         return "na czas"
     if mode == GameMode.specjalny:  # Dodana obsługa nowego trybu 
-        return "specjalny"          #
+        return "specjalny"          
     return "None"
 
 
@@ -123,7 +123,7 @@ def str_to_game_mode(string: str) -> Optional[int]:
     if string == "na czas":
         return GameMode.na_czas
     if string == "specjalny":        # Dodana obsługa nowego trybu 
-        return GameMode.specjalny    #
+        return GameMode.specjalny    
     return None
 
 
@@ -208,7 +208,7 @@ class Game:
         self.is_running_in_console = sys.stdin.isatty()
 
     def choose_difficulty(self):
-        if self.game_mode == GameMode.specjalny:                        # Tryb specjalny - pominięcie wyboru trudności oraz wyświetlenie zasad
+        if self.game_mode == GameMode.specjalny:                        ''' Tryb specjalny - pominięcie wyboru trudności oraz wyświetlenie zasad
             clear()
             print("\033[31mTRYB SPECJALNY\033[0m")
             print("Zasady:")
@@ -217,7 +217,7 @@ class Game:
             print("- Musisz poprawić błąd zanim przejdziesz dalej")
             print("\n\033[33mPOWODZENIA!\033[0m")
             time.sleep(4)  # Wiadomość będzie widoczna przez 4 sekundy
-            return                                                      #
+            return                                                      '''
                                                    
              
         clear()
@@ -245,11 +245,30 @@ class Game:
 
         clear()
         print(f"Tryb gry: {game_mode_to_str(self.game_mode)}") 
-        if self.game_mode != GameMode.specjalny:                               # pominięcie wyświetlania poziomu dla trybu specjalnego              
+        if self.game_mode != GameMode.specjalny:                                #pominięcie wyświetlania poziomu dla trybu specjalnego              
             print(f"Poziom trudności: {difficulty_to_str(self.difficulty)}")
         print("\nRozpoczynamy test...")
         time.sleep(2)
+        
+        if self.game_mode == GameMode.specjalny:                                  '''obsługa trybu specjalnego i wyświetlenie losowego tekstu 
+            # MINIMALNA OBSŁUGA TRYBU SPECJALNEGO
+            try:
+                with open('teksty.txt', 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    texts = [t.strip() for t in content.split('\n\n') if t.strip()]
 
+                if texts:
+                    text = random.choice(texts)
+                    clear()
+                    print("Wylosowany tekst:\n")
+                    print(text)
+                    print("\n")
+                else:
+                    print_red("Brak tekstów w pliku")
+            except Exception as e:
+                print_red(f"Błąd wczytywania pliku: {str(e)}")
+            return                                                                    '''
+    
         words_to_test = 3
         correct = 0
 
