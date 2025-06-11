@@ -222,6 +222,24 @@ class Game:
             if self.game_mode is None:
                 print_red("Nieprawidłowy wybór! Spróbuj ponownie.")
 
+    def play_game_mode_na_czas(self, words_done: int = 0, results: List[ResultOfCheck] = None, scores: BestScores = None):
+        best_scores = BestScores()
+
+        if results is None:
+            results = []
+        if scores is not None:
+            best_scores = scores
+
+        file_name = ""
+        if self.difficulty == Difficulty.easy:
+            file_name = "Test.txt"
+        elif self.difficulty == Difficulty.medium:
+            file_name = "Test.txt"
+        elif self.difficulty == Difficulty.hard:
+            file_name = "Test.txt"
+
+        
+
     def play(self):
         self.choose_game_mode()
         self.choose_difficulty()
