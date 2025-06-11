@@ -194,7 +194,71 @@ def end(n, t):
     #czyszczenie konsoli
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def write_to_history_file(result: ResultOfCheck):
+    try:
+        with open("History.txt", 'a') as file:
+            file.write(str(result) + "\n")
+    except:
+        pass
 
+
+def read_from_history_file() -> Optional[List[ResultOfCheck]]:
+    try:
+        results_list = []
+        with open("History.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 2:
+                return None
+            for line in lines:
+                result = str_to_ResultOfCheck(line)
+                if result is not None:
+                    results_list.append(result)
+        return results_list
+    except:
+        return None
+
+
+def clear_history_file():
+    try:
+        with open("History.txt", 'w'):
+            pass
+    except:
+        pass
+
+
+def write_to_settings_file(game_mode: int, difficulty: int):
+    op = 'w'
+    try:
+        with open("Settings.txt", 'r'):
+            pass
+    except:
+        op = 'x'
+
+    with open("Settings.txt", op) as file:
+        file.write(f"{game_mode_to_str(game_mode)}\n{difficulty_to_str(difficulty)}")
+
+
+def read_from_settings_file() -> Optional[Tuple[int, int]]:
+    try:
+        with open("Settings.txt", 'r') as file:
+            lines = file.readlines()
+            game_mode = str_to_game_mode(lines[0])
+            difficulty = str_to_difficulty(lines[1])
+            if game_mode is None or difficulty is None:
+                print(lines[0] + " - " + lines[1])
+                print(str(difficulty) + " - " + str(game_mode))
+                return None
+            return game_mode, difficulty
+    except:
+        return None
+
+
+def clear_settings_file():
+    try:
+        with open("Settings.txt", 'w'):
+            pass
+    except:
+        pass
 
 class Game:
     def __init__(self):
