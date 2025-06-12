@@ -229,17 +229,13 @@ def end(n, t):
 class Game:
     ''' Główna klasa zawierająca funkcjonalność gry '''
     def __init__(self):
-        self.difficulty = Difficulty.easy
+        self.difficulty = None
+        self.game_mode = None
 
     def choose_difficulty(self):
         ''' Funkcja służąca do wyboru trudności rozgrywki '''
         in_loop = True
         player_input = ""
-        self.difficulty = None
-        self.game_mode = None
-        self.is_running_in_console = sys.stdin.isatty()
-
-    def choose_difficulty(self):
         clear()
         print("====== Wybierz poziom trudności ======")
         print("Dostępne opcje: easy, medium, hard")
@@ -302,6 +298,6 @@ def main():
     game.play()
 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
     input("\nNaciśnij Enter, aby zakończyć...")
