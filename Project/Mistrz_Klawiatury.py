@@ -223,6 +223,40 @@ def end(n, t):
     os.system('cls' if os.name == 'nt' else 'clear')
 
 
+def write_to_history_file(result: ResultOfCheck):
+    ''' Funkcja dopisuje jeden wynik do historii '''
+    try:
+        with open("History.txt", 'a') as file:
+            file.write(str(result) + "\n")
+    except:
+        pass
+
+
+def read_from_history_file() -> Optional[List[ResultOfCheck]]:
+    ''' Funkcja odczytuje historię z pliku; zwraca None jeżeli nie ma pliku lub wystąpił błąd '''
+    try:
+        results_list = []
+        with open("History.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 2:
+                return None
+            for line in lines:
+                result = str_to_ResultOfCheck(line)
+                if result is not None:
+                    results_list.append(result)
+        return results_list
+    except:
+        return None
+
+
+def clear_history_file():
+    ''' Funkcja czyści plik historii jeżeli istnieje '''
+    try:
+        with open("History.txt", 'w'):
+            pass
+    except:
+        pass
+
 
 
 
