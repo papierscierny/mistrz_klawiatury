@@ -19,6 +19,20 @@ class ResultOfCheck:
     def __str__(self):
         return f"{str(self.correct)},{str(self.correct_word)},{str(self.typed_word)},{str(self.time_spent)}"
 
+def str_to_ResultOfCheck(string: str) -> Optional[ResultOfCheck]:
+    string = string.strip('\n')
+    string = string.strip()
+    elements = string.split(sep=',')
+    if len(elements) != 4:
+        return None
+
+    result = ResultOfCheck()
+    result.correct = bool(elements[0])
+    result.correct_word = elements[1]
+    result.typed_word = elements[2]
+    result.time_spent = float(elements[3])
+
+    return result
 
 #funkcja odpowiedzialna za środkowanie tekstu
 def txtcenter(txt):
@@ -143,6 +157,8 @@ def random_word_from_file(file_name: str) -> Optional[str]:
         return word
     except:
         return None
+
+
 
 
 class Game:
