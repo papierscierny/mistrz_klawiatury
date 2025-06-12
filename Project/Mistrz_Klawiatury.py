@@ -17,6 +17,91 @@ class ResultOfCheck:
     def __str__(self):
         return f"{str(self.correct)},{str(self.correct_word)},{str(self.typed_word)},{str(self.time_spent)}"
 
+class BestScores:
+    def __init__(self):
+        self.best_time_per_letter_easy = -1.0
+        self.best_time_per_letter_medium = -1.0
+        self.best_time_per_letter_hard = -1.0
+
+    def __add__(self, other):
+        new_scores = BestScores()
+
+        new_scores.best_time_per_letter_easy = min(self.best_time_per_letter_easy, other.best_time_per_letter_easy)
+        new_scores.best_time_per_letter_medium = min(self.best_time_per_letter_medium,
+                                                     other.best_time_per_letter_medium)
+        new_scores.best_time_per_letter_hard = min(self.best_time_per_letter_hard, other.best_time_per_letter_hard)
+
+        if new_scores.best_time_per_letter_easy == -1.0:
+            new_scores.best_time_per_letter_easy = max(self.best_time_per_letter_easy, other.best_time_per_letter_easy)
+
+        if new_scores.best_time_per_letter_medium == -1.0:
+            new_scores.best_time_per_letter_medium = max(self.best_time_per_letter_medium,
+                                                         other.best_time_per_letter_medium)
+
+        if new_scores.best_time_per_letter_hard == -1.0:
+            new_scores.best_time_per_letter_hard = max(self.best_time_per_letter_hard, other.best_time_per_letter_hard)
+
+        return new_scores
+
+    def read_best_scores_from_file() -> Optional[BestScores]:
+    try:
+        with open("BestScores.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 3:
+                return None
+
+            easy_score = lines[0]
+            easy_score = easy_score.strip('\n')
+            easy_score = easy_score.strip()
+
+            medium_score = lines[1]
+            medium_score = medium_score.strip('\n')
+            medium_score = medium_score.strip()
+
+            hard_score = lines[2]
+            hard_score = hard_score.strip('\n')
+            hard_score = hard_score.strip()
+
+            easy_score_f = float(easy_score)
+            medium_score_f = float(medium_score)
+            hard_score_f = float(hard_score)
+
+            if easy_score_f is None or medium_score_f is None or hard_score_f is None:
+                return None
+
+            best_scores = BestScores()
+            best_scores.best_time_per_letter_easy = easy_score_f
+            best_scores.best_time_per_letter_medium = medium_score_f
+            best_scores.best_time_per_letter_hard = hard_score_f
+            return best_scores
+    except:
+        return None
+
+    def update(self, result: ResultOfCheck, difficulty: int):
+        best_time_per_letter = result.time_spent / len(result.typed_word)
+
+        if difficulty == Difficulty.easy:
+            if self.best_time_per_letter_easy == -1.0:
+                self.best_time_per_letter_easy = best_time_per_letter
+
+            if self.best_time_per_letter_easy > best_time_per_letter:
+                self.best_time_per_letter_easy = best_time_per_letter
+
+        if difficulty == Difficulty.medium:
+            if self.best_time_per_letter_medium == -1.0:
+                self.best_time_per_letter_medium = best_time_per_letter
+
+            if self.best_time_per_letter_medium > best_time_per_letter:
+                self.best_time_per_letter_medium = best_time_per_letter
+
+        if difficulty == Difficulty.hard:
+            if self.best_time_per_letter_hard == -1.0:
+                self.best_time_per_letter_hard = best_time_per_letter
+
+            if self.best_time_per_letter_hard > best_time_per_letter:
+                self.best_time_per_letter_hard = best_time_per_letter
+
+
 
 def txtcenter(txt):
     try:
