@@ -263,6 +263,23 @@ class Game:
                     print("Wylosowany tekst:\n")
                     print(text)
                     print("\n")
+                    current_position = 0
+                    user_input = ""
+                    error_active = False  # flaga oznaczająca, czy jest aktywny błąd
+
+                    while current_position < len(text):
+                        char = msvcrt.getch()             '''Odczyt klawisza i pomijanie klawiszy specjalnych
+                        if char in (b'\x00', b'\xe0'):
+                            msvcrt.getch()
+                            continue                              '''
+
+                        try:                                    '''Konwersja bajtu na znak i ignorowanie błędów
+                            char = char.decode('utf-8')
+                        except UnicodeDecodeError:
+                            continue                                  '''
+
+                        if char == '\r':                           '''Ignorowanie klawisza Enter
+                            continue  # Ignoruj Enter                 '''
                 else:
                     print_red("Brak tekstów w pliku")
             except Exception as e:
