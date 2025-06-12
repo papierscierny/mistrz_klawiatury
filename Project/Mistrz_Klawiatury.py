@@ -232,11 +232,27 @@ class Game:
 
         file_name = ""
         if self.difficulty == Difficulty.easy:
-            file_name = "Test.txt"
+            file_name = "latwe_slowa.txt"
         elif self.difficulty == Difficulty.medium:
-            file_name = "Test.txt"
+            file_name = "medium_difficulty.txt"
         elif self.difficulty == Difficulty.hard:
-            file_name = "Test.txt"
+            file_name = "Trudne słówka.txt"
+
+        while words_done < 10:
+            words_done += 1
+            in_loop = True
+            word = random_word_from_file(file_name)
+            time_spent_on_word = 0.0
+            while in_loop:
+                clear()
+                result, time_spent = measure_time(print_word_and_check, word)
+                time_spent_on_word += time_spent + 0 if result.correct else 10  # czas na pisanie + ewentualna kara czasowa 10s
+                if result.correct:
+                    in_loop = False
+                    result.time_spent = time_spent_on_word
+                    results.append(result)
+                    best_scores.update(result, self.difficulty)
+                    write_to_history_file(result)
 
         
 
