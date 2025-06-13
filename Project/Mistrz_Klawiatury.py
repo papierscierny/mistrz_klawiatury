@@ -238,6 +238,63 @@ class Game:
             self.game_mode = str_to_game_mode(choice)
             if self.game_mode is None:
                 print_red("Nieprawidłowy wybór! Spróbuj ponownie.")
+                
+    def _special_game_mode(self):
+        try:
+            with open('teksty.txt', 'r', encoding='utf-8') as f:
+                content = f.read()
+                texts = [t.strip() for t in content.split('\n\n') if t.strip()]
+
+            if texts:
+                text = random.choice(texts)
+                clear()
+                print("Wylosowany tekst:\n")
+                print(text)
+                print("\n")
+
+                current_position = 0
+                start_time = time.time()  
+
+                while current_position < len(text):
+                    char = msvcrt.getch()                         #Odczyt klawisza i pomijanie klawiszy specjalnych
+
+                    if char in (b'\x00', b'\xe0'):
+                        msvcrt.getch()
+                        continue
+
+                    try:                                             #Konwersja bajtu na znak i ignorowanie błędów
+                        char = char.decode('utf-8')
+                    except UnicodeDecodeError:
+                        continue
+
+                    if char == '\r' or char == '\x08':                    #ignorowanie klawisza Enter i backspace
+                        continue
+
+                    expected_char = text[current_position]                        #sprawdzenie czy obecny znak jest zgodny
+                    if char == expected_char:
+                        print(f"\033[32m{char}\033[0m", end='', flush=True)
+                        current_position += 1
+
+                end_time = time.time()                                                    #wyświetlenie wyników
+                duration = end_time - start_time  
+                word_count = len(text.split())
+                wpm = (word_count / duration) * 60
+                print("\n")
+                summary_title = "PODSUMOWANIE WYNIKU"
+                print("\n" + summary_title.center(37))
+                print("-" * 37)
+                print("| {:^15} | {:^15} |".format("Czas [s]", "Słów na minutę"))
+                print("|" + "-" * 17 + "+" + "-" * 17 + "|")
+                print("| {:^15.2f} | {:^15.2f} |".format(duration, wpm))
+                print("-" * 37 + "\n")
+
+                input("Naciśnij Enter, aby kontynuować...")
+
+            else:
+                print_red("Brak tekstów w pliku")
+
+        except Exception as e:
+            print_red(f"Błąd wczytywania pliku: {str(e)}")
 
     def play(self):
         self.choose_game_mode()
@@ -249,63 +306,10 @@ class Game:
             print(f"Poziom trudności: {difficulty_to_str(self.difficulty)}")
         print("\nRozpoczynamy test...")
         time.sleep(2)
-        
-        if self.game_mode == GameMode.specjalny:                                  #obsługa trybu specjalnego i wyświetlenie losowego tekstu 
-            try:
-                with open('teksty.txt', 'r', encoding='utf-8') as f:
-                    content = f.read()
-                    texts = [t.strip() for t in content.split('\n\n') if t.strip()]
-
-                if texts:
-                    text = random.choice(texts)
-                    clear()
-                    print("Wylosowany tekst:\n")
-                    print(text)
-                    print("\n")
-                    current_position = 0
-                    start_time = time.time()
-                    
-                    while current_position < len(text):
-                        char = msvcrt.getch()             '''Odczyt klawisza i pomijanie klawiszy specjalnych
-                        if char in (b'\x00', b'\xe0'):
-                            msvcrt.getch()
-                            continue                              '''
-
-                        try:                                    '''Konwersja bajtu na znak i ignorowanie błędów
-                            char = char.decode('utf-8')
-                        except UnicodeDecodeError:
-                            continue                                  '''
-
-                        if char == '\r':                               #ignorowanie klawisza Enter
-                            continue
-                        if char == '\x08':                             #ignorowanie backspace
-                            continue
-                        expected_char = text[current_position]           #sprawdzenie czy obecny znak jest zgodny
-                        if char == expected_char:             
-                            print(f"\033[32m{char}\033[0m", end='', flush=True)
-                            current_position += 1
-
-                    end_time = time.time()
-                    duration = end_time - start_time                                       '''wyświetlenie wyników
-
-                    word_count = len(text.split())
-                    wpm = (word_count / duration) * 60
-                    print("\n")
-                    summary_title = "PODSUMOWANIE WYNIKU"
-                    print("\n" + summary_title.center(37))
-                    print("-" * 37)
-                    print("| {:^15} | {:^15} |".format("Czas [s]", "Słów na minutę"))
-                    print("|" + "-" * 17 + "+" + "-" * 17 + "|")
-                    print("| {:^15.2f} | {:^15.2f} |".format(duration, wpm))
-                    print("-" * 37 + "\n")
-
-                    input("Naciśnij Enter, aby kontynuować...")                             '''  
-                else:
-                    print_red("Brak tekstów w pliku")
-            except Exception as e:
-                print_red(f"Błąd wczytywania pliku: {str(e)}")
-            return                                                                   
-    
+        if self.game_mode == GameMode.specjalny:
+            self._special_game_mode()
+            return
+            
         words_to_test = 3
         correct = 0
 
