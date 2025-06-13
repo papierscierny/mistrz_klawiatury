@@ -6,8 +6,11 @@ import time
 import sys
 from typing import Optional, Any, Tuple, List
 
+is_running_in_console = sys.stdin.isatty()
+
 
 class ResultOfCheck:
+    ''' Klasa przechowyjąca dane dotyczące wpisanego i sprawdzonego słowa '''
     def __init__(self, correct: bool = False, correct_word: str = "", typed_word: str = "", time_spent: float = 0):
         self.correct = correct
         self.correct_word = correct_word
@@ -17,6 +20,20 @@ class ResultOfCheck:
     def __str__(self):
         return f"{str(self.correct)},{str(self.correct_word)},{str(self.typed_word)},{str(self.time_spent)}"
 
+def str_to_ResultOfCheck(string: str) -> Optional[ResultOfCheck]:
+    string = string.strip('\n')
+    string = string.strip()
+    elements = string.split(sep=',')
+    if len(elements) != 4:
+        return None
+
+    result = ResultOfCheck()
+    result.correct = bool(elements[0])
+    result.correct_word = elements[1]
+    result.typed_word = elements[2]
+    result.time_spent = float(elements[3])
+
+    return result
 
 def txtcenter(txt):
     try:
@@ -54,7 +71,8 @@ def start():
 
 
 def clear():
-    if game.is_running_in_console:
+    ''' Funkcja służy do czyszczenia konsoli '''
+    if is_running_in_console:
         os.system("cls")
     else:
         print()
@@ -62,6 +80,11 @@ def clear():
 
 
 def print_red(*args, **kwargs):
+    ''' Funkcja wypisuje przekazany napis w kolorze czerwonym '''
+    if is_running_in_console:
+        print("\033[31m", end = '')
+        print(*args, **kwargs, end = '')
+
     if game.is_running_in_console:
         print("\033[31m", end='')
         print(*args, **kwargs, end='')
@@ -72,6 +95,7 @@ def print_red(*args, **kwargs):
 
 
 class Difficulty:
+    ''' Klasa przedstawia różne trudności gry za pomocą formatu int '''
     easy = 1
     medium = 2
     hard = 3
@@ -84,6 +108,7 @@ class GameMode:
 
 
 def difficulty_to_str(difficulty: int) -> str:
+    ''' Funkcja zamienia trudność [int] do napisu [str] '''
     if difficulty == Difficulty.easy:
         return "easy"
     if difficulty == Difficulty.medium:
@@ -94,6 +119,7 @@ def difficulty_to_str(difficulty: int) -> str:
 
 
 def str_to_difficulty(string: str) -> Optional[int]:
+    ''' Funkcja zamienia napis [str] do trudności [int] '''
     string = string.strip('\n')
     string = string.strip()
     if string == "easy":
@@ -128,6 +154,7 @@ def str_to_game_mode(string: str) -> Optional[int]:
 
 
 def print_word_and_check(word: str) -> ResultOfCheck:
+    ''' Funkcja wypisuje podane słowo, sprawdza poprawność i zwraca wynik '''
     print("Type:")
     print("     " + word)
     typed = input("   - ")
@@ -137,6 +164,7 @@ def print_word_and_check(word: str) -> ResultOfCheck:
 
 
 def random_word_from_file(file_name: str) -> Optional[str]:
+    ''' Funkcja wybiera przypadkowe słowo z pliku .txt o podanej nazwie. W przypadku błędu zwraca None '''
     try:
         lines = []
         with open(file_name, 'r') as file:
@@ -201,11 +229,13 @@ def end(n, t):
 
 
 
+
+
 class Game:
+    ''' Główna klasa zawierająca funkcjonalność gry '''
     def __init__(self):
         self.difficulty = None
         self.game_mode = None
-        self.is_running_in_console = sys.stdin.isatty()
 
     def choose_difficulty(self):
         if self.game_mode == GameMode.specjalny:                        ''' Tryb specjalny - pominięcie wyboru trudności oraz wyświetlenie zasad
@@ -218,8 +248,11 @@ class Game:
             print("\n\033[33mPOWODZENIA!\033[0m")
             time.sleep(4)  # Wiadomość będzie widoczna przez 4 sekundy
             return                                                      '''
-                                                   
-             
+          
+        ''' Funkcja służąca do wyboru trudności rozgrywki '''
+        in_loop = True
+        player_input = ""
+ main
         clear()
         print("====== Wybierz poziom trudności ======")
         print("Dostępne opcje: easy, medium, hard")
@@ -295,6 +328,47 @@ class Game:
 
         except Exception as e:
             print_red(f"Błąd wczytywania pliku: {str(e)}")
+
+    def play_game_mode_na_czas(self, words_done: int = 0, results: List[ResultOfCheck] = None, scores: BestScores = None):
+        best_scores = BestScores()
+
+        if results is None:
+            results = []
+        if scores is not None:
+            best_scores = scores
+
+        file_name = ""
+        if self.difficulty == Difficulty.easy:
+            file_name = "latwe_slowa.txt"
+        elif self.difficulty == Difficulty.medium:
+            file_name = "medium_difficulty.txt"
+        elif self.difficulty == Difficulty.hard:
+            file_name = "Trudne słówka.txt"
+
+        while words_done < 10:
+            words_done += 1
+            in_loop = True
+            word = random_word_from_file(file_name)
+            time_spent_on_word = 0.0
+            while in_loop:
+                clear()
+                result, time_spent = measure_time(print_word_and_check, word)
+                time_spent_on_word += time_spent + 0 if result.correct else 10  # czas na pisanie + ewentualna kara czasowa 10s
+                if result.correct:
+                    in_loop = False
+                    result.time_spent = time_spent_on_word
+                    results.append(result)
+                    best_scores.update(result, self.difficulty)
+                    write_to_history_file(result)
+
+        previous_scores = read_best_scores_from_file()
+
+        self.end_screen(best_scores)
+
+        write_best_scores_to_file(best_scores)
+        clear_history_file()
+        clear_settings_file()
+        
 
     def play(self):
         self.choose_game_mode()
