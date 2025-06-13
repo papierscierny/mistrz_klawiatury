@@ -255,6 +255,47 @@ class Game:
             if self.game_mode is None:
                 print_red("Nieprawidłowy wybór! Spróbuj ponownie.")
 
+    def play_game_mode_na_czas(self, words_done: int = 0, results: List[ResultOfCheck] = None, scores: BestScores = None):
+        best_scores = BestScores()
+
+        if results is None:
+            results = []
+        if scores is not None:
+            best_scores = scores
+
+        file_name = ""
+        if self.difficulty == Difficulty.easy:
+            file_name = "latwe_slowa.txt"
+        elif self.difficulty == Difficulty.medium:
+            file_name = "medium_difficulty.txt"
+        elif self.difficulty == Difficulty.hard:
+            file_name = "Trudne słówka.txt"
+
+        while words_done < 10:
+            words_done += 1
+            in_loop = True
+            word = random_word_from_file(file_name)
+            time_spent_on_word = 0.0
+            while in_loop:
+                clear()
+                result, time_spent = measure_time(print_word_and_check, word)
+                time_spent_on_word += time_spent + 0 if result.correct else 10  # czas na pisanie + ewentualna kara czasowa 10s
+                if result.correct:
+                    in_loop = False
+                    result.time_spent = time_spent_on_word
+                    results.append(result)
+                    best_scores.update(result, self.difficulty)
+                    write_to_history_file(result)
+
+        previous_scores = read_best_scores_from_file()
+
+        self.end_screen(best_scores)
+
+        write_best_scores_to_file(best_scores)
+        clear_history_file()
+        clear_settings_file()
+        
+
     def play(self):
         self.choose_game_mode()
         self.choose_difficulty()
