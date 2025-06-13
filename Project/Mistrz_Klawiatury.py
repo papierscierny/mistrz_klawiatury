@@ -17,6 +17,21 @@ class ResultOfCheck:
     def __str__(self):
         return f"{str(self.correct)},{str(self.correct_word)},{str(self.typed_word)},{str(self.time_spent)}"
 
+
+def str_to_ResultOfCheck(string: str) -> Optional[ResultOfCheck]:
+    string = string.strip('\n')
+    string = string.strip()
+    elements = string.split(sep=',')
+    if len(elements) != 4:
+        return None
+
+    result = ResultOfCheck()
+    result.correct = bool(elements[0])
+    result.correct_word = elements[1]
+    result.typed_word = elements[2]
+    result.time_spent = float(elements[3])
+
+    return result
 class BestScores:
     def __init__(self):
         self.best_time_per_letter_easy = -1.0
@@ -228,56 +243,25 @@ def random_word_from_file(file_name: str) -> Optional[str]:
     except:
         return None
 
-def end(n, t):
-    os.system('cls' if os.name == 'nt' else 'clear') 
+def write_best_scores_to_file(scores: BestScores):
+    previous_scores = read_best_scores_from_file()
 
-    #NAPIS TYTUŁOWY
-    #Tekst końca
-    ascii_art = """
-        ░▒█░▄▀░▒█▀▀▀█░▒█▄░▒█░▀█▀░▒█▀▀▀░▒█▀▀▄░░░▒█▀▀█░▒█▀▀▄░▒█░░▒█
-        ░▒█▀▄░░▒█░░▒█░▒█▒█▒█░▒█░░▒█▀▀▀░▒█░░░░░░▒█░▄▄░▒█▄▄▀░▒▀▄▄▄▀
-        ░▒█░▒█░▒█▄▄▄█░▒█░░▀█░▄█▄░▒█▄▄▄░▒█▄▄▀░░░▒█▄▄▀░▒█░▒█░░░▒█░░
+    open_operator = 'w'
+    try:
+        with open("BestScores.txt", 'w'):
+            pass
+    except:
+        open_operator = 'x'
 
-    """
-
-    # Podziel tekst na linie i usuń puste linie na początku i na końcu
-    lines = [line for line in ascii_art.split('\n') if line.strip() != '']
-
-    # Wyświetl każdą linię wycentrowaną na czerwono
-    print("\033[31m")
-    for i in lines:
-        txtcenter(i)
-    print("\033[0m")
-
-    endtab = ["-----------------------------------------------------", 
-    f"|   Przepisane słowa   |             {n:.0f}              |",
-    "|---------------------------------------------------|",
-    f"|    Czas całkowity    |           {t:.2f}s            |",
-    "|---------------------------------------------------|",
-    f"| Średni czas na słowo |           {t/n:.2f}s            |",
-    "-----------------------------------------------------"]
-
-    #ustaw kolor na czerwony
-    print("\033[33m")
-
-    for i in endtab:
-        txtcenter(i)
-
-    #reset koloru
-    print("\033[0m")
-
-    #NACIŚNIJ ENTER
-    print("\n"*5)
-    print("\033[31m")
-    txtcenter("Naciśnij [Enter] aby rozpocząć od nowa.")
-    print("\033[0m")
-
-    #Sprawdzanie czy naciśnięto enter
-    input("")
-
-    #PRZEJŚCIE DALEJ
-    #czyszczenie konsoli
-    os.system('cls' if os.name == 'nt' else 'clear')
+    if previous_scores is None:
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{scores.best_time_per_letter_easy}\n{scores.best_time_per_letter_medium}\n{scores.best_time_per_letter_hard}")
+    else:
+        new_scores = scores + previous_scores
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{new_scores.best_time_per_letter_easy}\n{new_scores.best_time_per_letter_medium}\n{new_scores.best_time_per_letter_hard}")
 
 def write_to_history_file(result: ResultOfCheck):
     try:
@@ -344,6 +328,57 @@ def clear_settings_file():
             pass
     except:
         pass
+
+def end(n, t):
+    os.system('cls' if os.name == 'nt' else 'clear') 
+
+    #NAPIS TYTUŁOWY
+    #Tekst końca
+    ascii_art = """
+        ░▒█░▄▀░▒█▀▀▀█░▒█▄░▒█░▀█▀░▒█▀▀▀░▒█▀▀▄░░░▒█▀▀█░▒█▀▀▄░▒█░░▒█
+        ░▒█▀▄░░▒█░░▒█░▒█▒█▒█░▒█░░▒█▀▀▀░▒█░░░░░░▒█░▄▄░▒█▄▄▀░▒▀▄▄▄▀
+        ░▒█░▒█░▒█▄▄▄█░▒█░░▀█░▄█▄░▒█▄▄▄░▒█▄▄▀░░░▒█▄▄▀░▒█░▒█░░░▒█░░
+
+    """
+
+    # Podziel tekst na linie i usuń puste linie na początku i na końcu
+    lines = [line for line in ascii_art.split('\n') if line.strip() != '']
+
+    # Wyświetl każdą linię wycentrowaną na czerwono
+    print("\033[31m")
+    for i in lines:
+        txtcenter(i)
+    print("\033[0m")
+
+    endtab = ["-----------------------------------------------------", 
+    f"|   Przepisane słowa   |             {n:.0f}              |",
+    "|---------------------------------------------------|",
+    f"|    Czas całkowity    |           {t:.2f}s            |",
+    "|---------------------------------------------------|",
+    f"| Średni czas na słowo |           {t/n:.2f}s            |",
+    "-----------------------------------------------------"]
+
+    #ustaw kolor na czerwony
+    print("\033[33m")
+
+    for i in endtab:
+        txtcenter(i)
+
+    #reset koloru
+    print("\033[0m")
+
+    #NACIŚNIJ ENTER
+    print("\n"*5)
+    print("\033[31m")
+    txtcenter("Naciśnij [Enter] aby rozpocząć od nowa.")
+    print("\033[0m")
+
+    #Sprawdzanie czy naciśnięto enter
+    input("")
+
+    #PRZEJŚCIE DALEJ
+    #czyszczenie konsoli
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 class Game:
     def __init__(self):
