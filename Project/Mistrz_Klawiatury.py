@@ -250,8 +250,7 @@ class Game:
         print("\nRozpoczynamy test...")
         time.sleep(2)
         
-        if self.game_mode == GameMode.specjalny:                                  '''obsługa trybu specjalnego i wyświetlenie losowego tekstu 
-            # MINIMALNA OBSŁUGA TRYBU SPECJALNEGO
+        if self.game_mode == GameMode.specjalny:                                  #obsługa trybu specjalnego i wyświetlenie losowego tekstu 
             try:
                 with open('teksty.txt', 'r', encoding='utf-8') as f:
                     content = f.read()
@@ -264,9 +263,8 @@ class Game:
                     print(text)
                     print("\n")
                     current_position = 0
-                    user_input = ""
-                    error_active = False  # flaga oznaczająca, czy jest aktywny błąd
-
+                    start_time = time.time()
+                    
                     while current_position < len(text):
                         char = msvcrt.getch()             '''Odczyt klawisza i pomijanie klawiszy specjalnych
                         if char in (b'\x00', b'\xe0'):
@@ -278,13 +276,35 @@ class Game:
                         except UnicodeDecodeError:
                             continue                                  '''
 
-                        if char == '\r':                           '''Ignorowanie klawisza Enter
-                            continue  # Ignoruj Enter                 '''
+                        if char == '\r':                               #ignorowanie klawisza Enter
+                            continue
+                        if char == '\x08':                             #ignorowanie backspace
+                            continue
+                        expected_char = text[current_position]           #sprawdzenie czy obecny znak jest zgodny
+                        if char == expected_char:             
+                            print(f"\033[32m{char}\033[0m", end='', flush=True)
+                            current_position += 1
+
+                    end_time = time.time()
+                    duration = end_time - start_time                                       '''wyświetlenie wyników
+
+                    word_count = len(text.split())
+                    wpm = (word_count / duration) * 60
+                    print("\n")
+                    summary_title = "PODSUMOWANIE WYNIKU"
+                    print("\n" + summary_title.center(37))
+                    print("-" * 37)
+                    print("| {:^15} | {:^15} |".format("Czas [s]", "Słów na minutę"))
+                    print("|" + "-" * 17 + "+" + "-" * 17 + "|")
+                    print("| {:^15.2f} | {:^15.2f} |".format(duration, wpm))
+                    print("-" * 37 + "\n")
+
+                    input("Naciśnij Enter, aby kontynuować...")                             '''  
                 else:
                     print_red("Brak tekstów w pliku")
             except Exception as e:
                 print_red(f"Błąd wczytywania pliku: {str(e)}")
-            return                                                                    '''
+            return                                                                   
     
         words_to_test = 3
         correct = 0
