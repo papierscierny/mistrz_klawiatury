@@ -254,6 +254,13 @@ class Game:
                     best_scores.update(result, self.difficulty)
                     write_to_history_file(result)
 
+        previous_scores = read_best_scores_from_file()
+
+        self.end_screen(best_scores)
+
+        write_best_scores_to_file(best_scores)
+        clear_history_file()
+        clear_settings_file()
         
 
     def play(self):
