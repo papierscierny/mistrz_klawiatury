@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import msvcrt
 import os
 import random
 import time
@@ -34,6 +35,106 @@ def str_to_ResultOfCheck(string: str) -> Optional[ResultOfCheck]:
     result.time_spent = float(elements[3])
 
     return result
+
+def str_to_ResultOfCheck(string: str) -> Optional[ResultOfCheck]:
+    string = string.strip('\n')
+    string = string.strip()
+    elements = string.split(sep=',')
+    if len(elements) != 4:
+        return None
+
+    result = ResultOfCheck()
+    result.correct = bool(elements[0])
+    result.correct_word = elements[1]
+    result.typed_word = elements[2]
+    result.time_spent = float(elements[3])
+
+    return result
+class BestScores:
+    def __init__(self):
+        self.best_time_per_letter_easy = -1.0
+        self.best_time_per_letter_medium = -1.0
+        self.best_time_per_letter_hard = -1.0
+
+    def __add__(self, other):
+        new_scores = BestScores()
+
+        new_scores.best_time_per_letter_easy = min(self.best_time_per_letter_easy, other.best_time_per_letter_easy)
+        new_scores.best_time_per_letter_medium = min(self.best_time_per_letter_medium,
+                                                     other.best_time_per_letter_medium)
+        new_scores.best_time_per_letter_hard = min(self.best_time_per_letter_hard, other.best_time_per_letter_hard)
+
+        if new_scores.best_time_per_letter_easy == -1.0:
+            new_scores.best_time_per_letter_easy = max(self.best_time_per_letter_easy, other.best_time_per_letter_easy)
+
+        if new_scores.best_time_per_letter_medium == -1.0:
+            new_scores.best_time_per_letter_medium = max(self.best_time_per_letter_medium,
+                                                         other.best_time_per_letter_medium)
+
+        if new_scores.best_time_per_letter_hard == -1.0:
+            new_scores.best_time_per_letter_hard = max(self.best_time_per_letter_hard, other.best_time_per_letter_hard)
+
+        return new_scores
+
+    def read_best_scores_from_file() -> Optional[BestScores]:
+    try:
+        with open("BestScores.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 3:
+                return None
+
+            easy_score = lines[0]
+            easy_score = easy_score.strip('\n')
+            easy_score = easy_score.strip()
+
+            medium_score = lines[1]
+            medium_score = medium_score.strip('\n')
+            medium_score = medium_score.strip()
+
+            hard_score = lines[2]
+            hard_score = hard_score.strip('\n')
+            hard_score = hard_score.strip()
+
+            easy_score_f = float(easy_score)
+            medium_score_f = float(medium_score)
+            hard_score_f = float(hard_score)
+
+            if easy_score_f is None or medium_score_f is None or hard_score_f is None:
+                return None
+
+            best_scores = BestScores()
+            best_scores.best_time_per_letter_easy = easy_score_f
+            best_scores.best_time_per_letter_medium = medium_score_f
+            best_scores.best_time_per_letter_hard = hard_score_f
+            return best_scores
+    except:
+        return None
+
+    def update(self, result: ResultOfCheck, difficulty: int):
+        best_time_per_letter = result.time_spent / len(result.typed_word)
+
+        if difficulty == Difficulty.easy:
+            if self.best_time_per_letter_easy == -1.0:
+                self.best_time_per_letter_easy = best_time_per_letter
+
+            if self.best_time_per_letter_easy > best_time_per_letter:
+                self.best_time_per_letter_easy = best_time_per_letter
+
+        if difficulty == Difficulty.medium:
+            if self.best_time_per_letter_medium == -1.0:
+                self.best_time_per_letter_medium = best_time_per_letter
+
+            if self.best_time_per_letter_medium > best_time_per_letter:
+                self.best_time_per_letter_medium = best_time_per_letter
+
+        if difficulty == Difficulty.hard:
+            if self.best_time_per_letter_hard == -1.0:
+                self.best_time_per_letter_hard = best_time_per_letter
+
+            if self.best_time_per_letter_hard > best_time_per_letter:
+                self.best_time_per_letter_hard = best_time_per_letter
+
+
 
 def txtcenter(txt):
     try:
@@ -85,7 +186,7 @@ def print_red(*args, **kwargs):
         print("\033[31m", end = '')
         print(*args, **kwargs, end = '')
 
-    if game.is_running_in_console:
+    if is_running_in_console:
         print("\033[31m", end='')
         print(*args, **kwargs, end='')
         print("\033[0m")
@@ -105,6 +206,146 @@ class GameMode:
     nauka = 1
     na_czas = 2
     specjalny = 3  # Dodany nowy tryb specjalny
+
+
+class BestScores:
+    def __init__(self):
+        self.best_time_per_letter_easy = -1.0
+        self.best_time_per_letter_medium = -1.0
+        self.best_time_per_letter_hard = -1.0
+
+    def __add__(self, other):
+        new_scores = BestScores()
+
+        new_scores.best_time_per_letter_easy = min(self.best_time_per_letter_easy, other.best_time_per_letter_easy)
+        new_scores.best_time_per_letter_medium = min(self.best_time_per_letter_medium,
+                                                     other.best_time_per_letter_medium)
+        new_scores.best_time_per_letter_hard = min(self.best_time_per_letter_hard, other.best_time_per_letter_hard)
+
+        if new_scores.best_time_per_letter_easy == -1.0:
+            new_scores.best_time_per_letter_easy = max(self.best_time_per_letter_easy, other.best_time_per_letter_easy)
+
+        if new_scores.best_time_per_letter_medium == -1.0:
+            new_scores.best_time_per_letter_medium = max(self.best_time_per_letter_medium,
+                                                         other.best_time_per_letter_medium)
+
+        if new_scores.best_time_per_letter_hard == -1.0:
+            new_scores.best_time_per_letter_hard = max(self.best_time_per_letter_hard, other.best_time_per_letter_hard)
+
+        return new_scores
+
+    def update(self, result: ResultOfCheck, difficulty: int):
+        best_time_per_letter = result.time_spent / len(result.typed_word)
+
+        if difficulty == Difficulty.easy:
+            if self.best_time_per_letter_easy == -1.0:
+                self.best_time_per_letter_easy = best_time_per_letter
+
+            if self.best_time_per_letter_easy > best_time_per_letter:
+                self.best_time_per_letter_easy = best_time_per_letter
+
+        if difficulty == Difficulty.medium:
+            if self.best_time_per_letter_medium == -1.0:
+                self.best_time_per_letter_medium = best_time_per_letter
+
+            if self.best_time_per_letter_medium > best_time_per_letter:
+                self.best_time_per_letter_medium = best_time_per_letter
+
+        if difficulty == Difficulty.hard:
+            if self.best_time_per_letter_hard == -1.0:
+                self.best_time_per_letter_hard = best_time_per_letter
+
+            if self.best_time_per_letter_hard > best_time_per_letter:
+                self.best_time_per_letter_hard = best_time_per_letter
+
+
+def read_best_scores_from_file() -> Optional[BestScores]:
+    try:
+        with open("BestScores.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 3:
+                return None
+
+            easy_score = lines[0]
+            easy_score = easy_score.strip('\n')
+            easy_score = easy_score.strip()
+
+            medium_score = lines[1]
+            medium_score = medium_score.strip('\n')
+            medium_score = medium_score.strip()
+
+            hard_score = lines[2]
+            hard_score = hard_score.strip('\n')
+            hard_score = hard_score.strip()
+
+            easy_score_f = float(easy_score)
+            medium_score_f = float(medium_score)
+            hard_score_f = float(hard_score)
+
+            if easy_score_f is None or medium_score_f is None or hard_score_f is None:
+                return None
+
+            best_scores = BestScores()
+            best_scores.best_time_per_letter_easy = easy_score_f
+            best_scores.best_time_per_letter_medium = medium_score_f
+            best_scores.best_time_per_letter_hard = hard_score_f
+            return best_scores
+    except:
+        return None
+
+def write_best_scores_to_file(scores: BestScores):
+    previous_scores = read_best_scores_from_file()
+
+    open_operator = 'w'
+    try:
+        with open("BestScores.txt", 'w'):
+            pass
+    except:
+        open_operator = 'x'
+
+    if previous_scores is None:
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{scores.best_time_per_letter_easy}\n{scores.best_time_per_letter_medium}\n{scores.best_time_per_letter_hard}")
+    else:
+        new_scores = scores + previous_scores
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{new_scores.best_time_per_letter_easy}\n{new_scores.best_time_per_letter_medium}\n{new_scores.best_time_per_letter_hard}")
+
+def write_to_settings_file(game_mode: int, difficulty: int):
+    op = 'w'
+    try:
+        with open("Settings.txt", 'r'):
+            pass
+    except:
+        op = 'x'
+
+    with open("Settings.txt", op) as file:
+        file.write(f"{game_mode_to_str(game_mode)}\n{difficulty_to_str(difficulty)}")
+
+
+def read_from_settings_file() -> Optional[Tuple[int, int]]:
+    try:
+        with open("Settings.txt", 'r') as file:
+            lines = file.readlines()
+            game_mode = str_to_game_mode(lines[0])
+            difficulty = str_to_difficulty(lines[1])
+            if game_mode is None or difficulty is None:
+                print(lines[0] + " - " + lines[1])
+                print(str(difficulty) + " - " + str(game_mode))
+                return None
+            return game_mode, difficulty
+    except:
+        return None
+
+
+def clear_settings_file():
+    try:
+        with open("Settings.txt", 'w'):
+            pass
+    except:
+        pass
 
 
 def difficulty_to_str(difficulty: int) -> str:
@@ -176,6 +417,92 @@ def random_word_from_file(file_name: str) -> Optional[str]:
     except:
         return None
 
+def write_best_scores_to_file(scores: BestScores):
+    previous_scores = read_best_scores_from_file()
+
+    open_operator = 'w'
+    try:
+        with open("BestScores.txt", 'w'):
+            pass
+    except:
+        open_operator = 'x'
+
+    if previous_scores is None:
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{scores.best_time_per_letter_easy}\n{scores.best_time_per_letter_medium}\n{scores.best_time_per_letter_hard}")
+    else:
+        new_scores = scores + previous_scores
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{new_scores.best_time_per_letter_easy}\n{new_scores.best_time_per_letter_medium}\n{new_scores.best_time_per_letter_hard}")
+
+def write_to_history_file(result: ResultOfCheck):
+    try:
+        with open("History.txt", 'a') as file:
+            file.write(str(result) + "\n")
+    except:
+        pass
+
+
+def read_from_history_file() -> Optional[List[ResultOfCheck]]:
+    try:
+        results_list = []
+        with open("History.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 2:
+                return None
+            for line in lines:
+                result = str_to_ResultOfCheck(line)
+                if result is not None:
+                    results_list.append(result)
+        return results_list
+    except:
+        return None
+
+
+def clear_history_file():
+    try:
+        with open("History.txt", 'w'):
+            pass
+    except:
+        pass
+
+
+def write_to_settings_file(game_mode: int, difficulty: int):
+    op = 'w'
+    try:
+        with open("Settings.txt", 'r'):
+            pass
+    except:
+        op = 'x'
+
+    with open("Settings.txt", op) as file:
+        file.write(f"{game_mode_to_str(game_mode)}\n{difficulty_to_str(difficulty)}")
+
+
+def read_from_settings_file() -> Optional[Tuple[int, int]]:
+    try:
+        with open("Settings.txt", 'r') as file:
+            lines = file.readlines()
+            game_mode = str_to_game_mode(lines[0])
+            difficulty = str_to_difficulty(lines[1])
+            if game_mode is None or difficulty is None:
+                print(lines[0] + " - " + lines[1])
+                print(str(difficulty) + " - " + str(game_mode))
+                return None
+            return game_mode, difficulty
+    except:
+        return None
+
+
+def clear_settings_file():
+    try:
+        with open("Settings.txt", 'w'):
+            pass
+    except:
+        pass
+
 def end(n, t):
     os.system('cls' if os.name == 'nt' else 'clear') 
 
@@ -229,13 +556,78 @@ def end(n, t):
 
 
 
+def write_to_history_file(result: ResultOfCheck):
+    ''' Funkcja dopisuje jeden wynik do historii '''
+    try:
+        with open("History.txt", 'a') as file:
+            file.write(str(result) + "\n")
+    except:
+        pass
 
+
+def read_from_history_file() -> Optional[List[ResultOfCheck]]:
+    ''' Funkcja odczytuje historię z pliku; zwraca None jeżeli nie ma pliku lub wystąpił błąd '''
+    try:
+        results_list = []
+        with open("History.txt", 'r') as file:
+            lines = file.readlines()
+            if len(lines) < 2:
+                return None
+            for line in lines:
+                result = str_to_ResultOfCheck(line)
+                if result is not None:
+                    results_list.append(result)
+        return results_list
+    except:
+        return None
+
+
+def clear_history_file():
+    ''' Funkcja czyści plik historii jeżeli istnieje '''
+    try:
+        with open("History.txt", 'w'):
+            pass
+    except:
+        pass
+
+
+def measure_time(function, *args, **kwargs) -> Tuple[Any, float]:
+    start_time = time.time()
+    result = function(*args, **kwargs)
+    end_time = time.time()
+    return result, end_time - start_time
 
 class Game:
     ''' Główna klasa zawierająca funkcjonalność gry '''
     def __init__(self):
         self.difficulty = None
         self.game_mode = None
+
+    def begin(self) -> None:
+        
+        settings = read_from_settings_file()
+        if settings is None:
+            start()
+            self.play()
+            return
+
+        history = read_from_history_file()
+        if history is None:
+            start()
+            self.play()
+            return
+
+        best_scores = read_best_scores_from_file()
+        if best_scores is None:
+            best_scores = BestScores()
+
+        game_mode, difficulty = settings
+        self.game_mode = game_mode
+        self.difficulty = difficulty
+
+        if game_mode == GameMode.na_czas:
+            self.play_game_mode_na_czas(len(history), history, best_scores)
+
 
     def choose_difficulty(self):
         if self.game_mode == GameMode.specjalny:                        ''' Tryb specjalny - pominięcie wyboru trudności oraz wyświetlenie zasad
@@ -252,7 +644,6 @@ class Game:
         ''' Funkcja służąca do wyboru trudności rozgrywki '''
         in_loop = True
         player_input = ""
- main
         clear()
         print("====== Wybierz poziom trudności ======")
         print("Dostępne opcje: easy, medium, hard")
@@ -408,13 +799,43 @@ class Game:
         print(f"Tryb: {game_mode_to_str(self.game_mode)}")
         print(f"Poziom: {difficulty_to_str(self.difficulty)}")
 
+"""def easy_game_mode(self,  words_done: int = 0, results: List[ResultOfCheck] = None, scores: BestScores = None):
+        best_scores = BestScores()
 
+        if results is None:
+            results = []
+        if scores is not None:
+            best_scores = scores
+
+        file_name = ""
+        if self.difficulty == Difficulty.easy:
+            file_name = "latwe_slowa.txt"
+        elif self.difficulty == Difficulty.medium:
+            file_name = "medium_difficulty.txt"
+        elif self.difficulty == Difficulty.hard:
+            file_name = "Trudne słówka.txt"
+
+        while words_done < 10:
+            words_done += 1
+            in_loop = True
+            word = random_word_from_file(file_name)
+            while in_loop:
+                clear()
+                if result.correct:
+                    in_loop = False
+                    results.append(result)
+                    best_scores.update(result, self.difficulty)
+                    write_to_history_file(result)
+
+        self.end_screen()
+        clear_history_file()
+        clear_settings_file()
+"""
 game = Game()
 
 
 def main():
-    start()
-    game.play()
+    game.begin()
 
 
 if __name__ == "__main__":
