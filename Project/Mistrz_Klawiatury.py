@@ -286,7 +286,6 @@ class Game:
         ''' Funkcja służąca do wyboru trudności rozgrywki '''
         in_loop = True
         player_input = ""
- main
         clear()
         print("====== Wybierz poziom trudności ======")
         print("Dostępne opcje: easy, medium, hard")
