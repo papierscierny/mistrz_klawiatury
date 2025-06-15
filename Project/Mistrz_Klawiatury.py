@@ -441,7 +441,38 @@ class Game:
         print(f"Tryb: {game_mode_to_str(self.game_mode)}")
         print(f"Poziom: {difficulty_to_str(self.difficulty)}")
 
+"""def easy_game_mode(self,  words_done: int = 0, results: List[ResultOfCheck] = None, scores: BestScores = None):
+        best_scores = BestScores()
 
+        if results is None:
+            results = []
+        if scores is not None:
+            best_scores = scores
+
+        file_name = ""
+        if self.difficulty == Difficulty.easy:
+            file_name = "latwe_slowa.txt"
+        elif self.difficulty == Difficulty.medium:
+            file_name = "medium_difficulty.txt"
+        elif self.difficulty == Difficulty.hard:
+            file_name = "Trudne słówka.txt"
+
+        while words_done < 10:
+            words_done += 1
+            in_loop = True
+            word = random_word_from_file(file_name)
+            while in_loop:
+                clear()
+                if result.correct:
+                    in_loop = False
+                    results.append(result)
+                    best_scores.update(result, self.difficulty)
+                    write_to_history_file(result)
+
+        self.end_screen()
+        clear_history_file()
+        clear_settings_file()
+"""
 game = Game()
 
 
