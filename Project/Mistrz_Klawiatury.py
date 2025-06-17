@@ -444,7 +444,17 @@ def write_to_history_file(result: ResultOfCheck):
     except:
         pass
 
+def write_to_settings_file(game_mode: int, difficulty: int):
+    op = 'w'
+    try:
+        with open("Settings.txt", 'r'):
+            pass
+    except:
+        op = 'x'
 
+    with open("Settings.txt", op) as file:
+        file.write(f"{game_mode_to_str(game_mode)}\n{difficulty_to_str(difficulty)}")
+        
 def read_from_history_file() -> Optional[List[ResultOfCheck]]:
     try:
         results_list = []
@@ -480,7 +490,13 @@ def write_to_settings_file(game_mode: int, difficulty: int):
     with open("Settings.txt", op) as file:
         file.write(f"{game_mode_to_str(game_mode)}\n{difficulty_to_str(difficulty)}")
 
-
+def write_to_history_file(result: ResultOfCheck):
+    try:
+        with open("History.txt", 'a') as file:
+            file.write(str(result) + "\n")
+    except:
+        pass
+        
 def read_from_settings_file() -> Optional[Tuple[int, int]]:
     try:
         with open("Settings.txt", 'r') as file:
@@ -495,7 +511,26 @@ def read_from_settings_file() -> Optional[Tuple[int, int]]:
     except:
         return None
 
+def write_best_scores_to_file(scores: BestScores):
+    previous_scores = read_best_scores_from_file()
 
+    open_operator = 'w'
+    try:
+        with open("BestScores.txt", 'w'):
+            pass
+    except:
+        open_operator = 'x'
+
+    if previous_scores is None:
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{scores.best_time_per_letter_easy}\n{scores.best_time_per_letter_medium}\n{scores.best_time_per_letter_hard}")
+    else:
+        new_scores = scores + previous_scores
+        with open("BestScores.txt", open_operator) as file:
+            file.write(
+                f"{new_scores.best_time_per_letter_easy}\n{new_scores.best_time_per_letter_medium}\n{new_scores.best_time_per_letter_hard}")
+            
 def clear_settings_file():
     try:
         with open("Settings.txt", 'w'):
@@ -799,7 +834,38 @@ class Game:
         print(f"Tryb: {game_mode_to_str(self.game_mode)}")
         print(f"Poziom: {difficulty_to_str(self.difficulty)}")
 
+"""def easy_game_mode(self,  words_done: int = 0, results: List[ResultOfCheck] = None, scores: BestScores = None):
+        best_scores = BestScores()
 
+        if results is None:
+            results = []
+        if scores is not None:
+            best_scores = scores
+
+        file_name = ""
+        if self.difficulty == Difficulty.easy:
+            file_name = "latwe_slowa.txt"
+        elif self.difficulty == Difficulty.medium:
+            file_name = "medium_difficulty.txt"
+        elif self.difficulty == Difficulty.hard:
+            file_name = "Trudne słówka.txt"
+
+        while words_done < 10:
+            words_done += 1
+            in_loop = True
+            word = random_word_from_file(file_name)
+            while in_loop:
+                clear()
+                if result.correct:
+                    in_loop = False
+                    results.append(result)
+                    best_scores.update(result, self.difficulty)
+                    write_to_history_file(result)
+
+        self.end_screen()
+        clear_history_file()
+        clear_settings_file()
+"""
 game = Game()
 
 
