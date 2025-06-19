@@ -1,0 +1,9 @@
+Projekt zawiera poprawioną wersję programu.
+
+Istniejące funkcje zostały przeniesione do modułów oraz dostosowane do pracy w module.
+Poprawiony został problematyczny poprzednio system wyboru słowa do przepisania.
+W miejsce ok. 17 funkcji zostały wstawione klasa bazowa obsługi plików oraz klasy pochodne.
+Zastosowano nieużywany poprzednio ekran końcowy.
+Dodano komentarze kodu.
+
+Program można uruchomić poprzez plik Mistrz_Klawiatury.py
